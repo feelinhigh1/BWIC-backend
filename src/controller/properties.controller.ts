@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { Property } from "@models/properties.model";
+import { Category } from "@models/category.model";
 
 interface IPropertyRequest {
   title: string;
-  category: string;
+  categoryId: number;
   location: string;
   price: string;
   roi: string;
@@ -20,6 +21,12 @@ export class PropertyController {
     try {
       const properties = await Property.findAll({
         attributes: { exclude: ["created_at", "updated_at"] },
+        include: [
+          {
+            model: Category,
+            attributes: ["name"],
+          },
+        ],
       });
       res.status(200).json(properties);
     } catch (error) {
@@ -42,7 +49,7 @@ export class PropertyController {
 
       const newProperty = await Property.create({
         title: request.title,
-        category: request.category,
+        categoryId: request.categoryId,
         location: request.location,
         price: request.price,
         roi: request.roi,
@@ -63,12 +70,21 @@ export class PropertyController {
   async getById(req: Request, res: Response) {
     try {
       const id = req.params.id;
+
       const property = await Property.findByPk(id, {
         attributes: { exclude: ["created_at", "updated_at"] },
+        include: [
+          {
+            model: Category,
+            attributes: ["name"], // only include category name
+          },
+        ],
       });
+
       if (!property) {
         return res.status(404).json({ message: "Property not found" });
       }
+
       res.status(200).json(property);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch property", error });
@@ -91,7 +107,7 @@ export class PropertyController {
 
       await property.update({
         title: request.title,
-        category: request.category,
+        categoryId: request.categoryId,
         location: request.location,
         price: request.price,
         roi: request.roi,

@@ -1,11 +1,11 @@
 import sequelize from "config/config";
 import express from "express";
-import { propertiesRouter } from "@routes/properties.route";
 import cors from "cors";
 import path from "path";
-import { categoriesRouter } from "@routes/category.route";
 import dotenv from "dotenv";
 import { contactRouter } from "@routes/contact.route";
+import { categoriesRouter } from "@routes/category.route";
+import { propertiesRouter } from "@routes/properties.route";
 
 const app = express();
 

@@ -12,6 +12,31 @@ interface IContactMessage {
 }
 
 export class ContactController {
+  async getAll(req: Request, res: Response) {
+    try {
+      const contacts = await ContactMessage.findAll();
+      res.status(200).json(contacts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contacts", error });
+    }
+  }
+
+  async getById(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const contact = await ContactMessage.findByPk(id);
+
+      if (!contact) {
+        return res.status(404).json({ message: "Contact message not found" });
+      }
+
+      res.status(200).json(contact);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Failed to fetch contact message", error });
+    }
+  }
   // Create / Submit contact message
   async submitContactMessage(req: Request, res: Response) {
     try {
@@ -51,7 +76,7 @@ export class ContactController {
 
       // Prepare email content
       const mailOptions = {
-        from: `"Your Website" <${process.env.FROM_EMAIL}>`,
+        from: `"BWIC" <${process.env.FROM_EMAIL}>`,
         to: process.env.NOTIFY_EMAIL,
         subject: `New Contact Message from ${contactMessage.name}`,
         text: `
