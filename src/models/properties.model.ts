@@ -43,7 +43,13 @@ export class Property extends Model {
   @Column({ type: DataType.STRING, allowNull: false })
   area!: string;
 
-  @Column({ type: DataType.STRING, allowNull: true })
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+    validate: {
+      is: /^\d+-\d+-\d+-\d+(\.\d+)?$/, // Ensures format like 0-0-0-0 // Only last part allows decimals
+    },
+  })
   areaNepali?: string;
 
   @Column({ type: DataType.INTEGER, allowNull: true })
